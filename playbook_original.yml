@@ -1,0 +1,29 @@
+---
+
+- hosts: webservers
+  become: yes
+
+  tasks:
+  -  name: Installing apache
+     yum:
+       name: httpd
+       state: installed
+
+  -  name: Changing port number for httpd
+     lineinfile:
+       path: /etc/httpd/conf/httpd.conf
+       regexp: '^Listen'
+       line: Listen 80
+
+  -  name: restarting httpd
+     service:
+       name: httpd
+       state: restarted
+
+  -  name: copying file over to slave server
+     copy:
+       src: /etc/code/test
+       dest: /root/.ansible/test
+       owner: root
+       group: root
+       mode: '0644'  
